@@ -1,0 +1,39 @@
+<?php
+echo "<h2>📁 Test Path Uploads</h2>";
+
+// Cek folder uploads
+$upload_path = "../uploads/";
+echo "<h3>Cek folder: " . $upload_path . "</h3>";
+
+if (is_dir($upload_path)) {
+    echo "✅ Folder uploads DITEMUKAN!<br>";
+    echo "📂 Path lengkap: " . realpath($upload_path) . "<br><br>";
+    
+    // Cek subfolder
+    $subfolders = ['sertifikat', 'foto', 'surat_tugas'];
+    foreach ($subfolders as $sub) {
+        $sub_path = $upload_path . $sub;
+        if (is_dir($sub_path)) {
+            echo "✅ Folder <b>$sub</b> DITEMUKAN<br>";
+            // Tampilkan isi folder
+            $files = scandir($sub_path);
+            $file_count = 0;
+            foreach ($files as $file) {
+                if ($file != '.' && $file != '..') {
+                    echo "&nbsp;&nbsp;&nbsp;📄 <a href='$sub_path/$file' target='_blank'>$file</a><br>";
+                    $file_count++;
+                }
+            }
+            if ($file_count == 0) {
+                echo "&nbsp;&nbsp;&nbsp;⚠️ Folder kosong<br>";
+            }
+        } else {
+            echo "❌ Folder <b>$sub</b> TIDAK DITEMUKAN<br>";
+        }
+        echo "<br>";
+    }
+} else {
+    echo "❌ Folder uploads TIDAK DITEMUKAN!<br>";
+    echo "Coba cek apakah folder uploads ada di: " . realpath("../") . "/uploads<br>";
+}
+?>

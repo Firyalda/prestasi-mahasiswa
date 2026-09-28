@@ -1,0 +1,30 @@
+<?php
+// ... kode yang sudah ada sebelumnya ...
+
+// Fungsi baru untuk OCR
+function extractTextFromPDF($pdfPath) {
+    $pythonScript = dirname(__DIR__) . '/ocr/extract_sertifikat.py';
+    $command = 'py -3.10 "' . $pythonScript . '" "' . $pdfPath . '" 2>&1';
+    
+    $output = shell_exec($command);
+    $result = json_decode($output, true);
+    
+    if ($result && isset($result['success']) && $result['success']) {
+        return $result['text'];
+    }
+    
+    return false;
+}
+
+function saveOCRLog($pdfPath, $extractedText, $status) {
+    $logFile = dirname(__DIR__) . '/uploads/logs/ocr_log.txt';
+    $logDir = dirname($logFile);
+    
+    if (!is_dir($logDir)) {
+        mkdir($logDir, 0777, true);
+    }
+    
+    $log = date('Y-m-d H:i:s') . " | " . basename($pdfPath) . " | " . $status . " | " . substr($extractedText, 0, 100) . "\n";
+    file_put_contents($logFile, $log, FILE_APPEND);
+}
+?>
